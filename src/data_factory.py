@@ -1,12 +1,14 @@
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 class TrainData(object):
-    def __init__(self, batch_size, image, labels):
-        
+    def __init__(self, dat):
+        self._raw_dat = dat
+    
 
-    def batch_producer(self, image, y, batch_size, num_steps):
-
+    def _create_layered_labels(self):
+    
 
 
 
