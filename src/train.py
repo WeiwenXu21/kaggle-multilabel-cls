@@ -95,6 +95,8 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
+    print(args.batch)
+
     y = TrainData(args.label, args.batch)
     train(args.image, y, learning_rate=args.step, training_epochs=args.iters, sfile = args.weight, cnn=args.net, model_path=args.output)
 

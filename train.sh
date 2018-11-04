@@ -10,4 +10,4 @@ MODEL=$5
 #ITER: 10
 #MODEL: dat/vgg16/vgg16_faster_rcnn_iter_70000.ckpt
 
-python src/train.py -x ${IMAGE} -y ${LABEL} -o ${OUTPUT} -i ${ITER} -w ${MODEL}
+python src/train.py -x ${IMAGE} -y ${LABEL} -o ${OUTPUT} -i ${ITER} -w ${MODEL} -ba 50
