@@ -49,10 +49,13 @@ class Network(object):
                 variables_to_restore.append(v)
             else:
                 new_varibles.append(v)
-        
-        if sfile is not None:
+
+        if sfile is not None and not sfile.split('/')[-1][:7]=='network':
             self.saver2 = tf.train.Saver(variables_to_restore)
             self.saver2.restore(self.sess, sfile)
+        elif sfile is not None and sfile.split('/')[-1][:7]=='network':
+            self.saver.restore(self.sess, sfile)
+                    
 
     def _prediction_layers(self, base_cnn = 'vgg16'):
         if base_cnn is 'vgg16':

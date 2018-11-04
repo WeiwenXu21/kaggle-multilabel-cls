@@ -11,7 +11,7 @@ def load_image(X_folder, img_names):
     for img in img_names:
         path = os.path.join(X_folder,img+'.jpg')
         image = cv2.imread(path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+#        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
         image = cv2.resize(image, (224,224))
         image_list.append(image)
     image_list = np.array(image_list)
@@ -34,20 +34,25 @@ def train(X_folder, y, learning_rate=0.001, batch_size=1000, training_epochs=500
     batch_numb = y.get_batch_number()
     
     total_loss = 0
+    loss_list = []
     for epoch in range(training_epochs):
         ep_loss = 0
         for j in range(batch_numb):
             img_names, batch_layer_one, batch_layer_two, batch_layer_three, batch_layer_four = y.get_next_batch(j)
             images = load_image(X_folder, img_names)
-#            , batch_size=batch_size
             batch_loss = network.partial_fit(images, batch_layer_one, batch_layer_two, batch_layer_three, batch_layer_four, istrain=True)
             ep_loss += batch_loss
         ep_loss = ep_loss/batch_numb
         total_loss += ep_loss
-        print("Epoch:", '%04d' % (epoch), "Loss = ", "{:.9f}".format(total_loss))
+        loss_list.append(total_loss)
+        print("Epoch:", '%04d' % (epoch+1), "Loss = ", "{:.9f}".format(total_loss))
         if (epoch+1)%1000 == 0 and model_path is not None:
-            path = os.path.join(model_path,'model')
+            path = os.path.join(model_path,'model','eps'+str(epoch+1))
+            if not os.path.exists(path):
+                os.mkdir(path)
             network.save(path, step = epoch+1)
+    loss_list=np.array(loss_list)
+    np.save(os.path.join(model_path,'training_loss.npy'),loss_list)
 
 def parse_args():
     """

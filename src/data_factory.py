@@ -4,7 +4,7 @@ import math
 
 class TrainData(object):
     def __init__(self, dat_path, batch_size):
-        self._raw_dat = np.load(dat_path)
+        self._raw_dat = np.load(dat_path)[109124:109125]
         np.random.shuffle(self._raw_dat)
         self._batch_size = batch_size
         self._create_layered_labels()
