@@ -10,6 +10,7 @@ def load_image(X_folder, img_names):
     image_list = []
     for img in img_names:
         path = os.path.join(X_folder,img+'.jpg')
+        assert os.path.exists(path)
         image = cv2.imread(path)
 #        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
         image = cv2.resize(image, (224,224))

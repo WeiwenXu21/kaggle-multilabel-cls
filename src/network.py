@@ -215,12 +215,15 @@ class Network(object):
         self._loss_third = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.third, labels=self._y_third)
         self._loss_fourth = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.fourth, labels=self._y_fourth)
         
-        mask_first = tf.reduce_max(self._y_first, axis=1)
-        mask_second = tf.reduce_max(self._y_second, axis=1)
-        mask_thrid = tf.reduce_max(self._y_third, axis=1)
-        mask_fourth= tf.reduce_max(self._y_fourth, axis=1)
-        
-        self._cost = tf.reduce_mean(mask_first * self._loss_first) + tf.reduce_mean(mask_second * self._loss_second) + tf.reduce_mean(mask_thrid*self._loss_third) + tf.reduce_mean(mask_fourth * self._loss_fourth)
+        mask_first = tf.reshape(tf.reduce_max(self._y_first, axis=1), [-1,1])
+        mask_second = tf.reshape(tf.reduce_max(self._y_second, axis=1), [-1,1])
+        mask_thrid = tf.reshape(tf.reduce_max(self._y_third, axis=1), [-1,1])
+        mask_fourth= tf.reshape(tf.reduce_max(self._y_fourth, axis=1), [-1,1])
+
+        self._cost = tf.reduce_mean(tf.multiply(mask_first, self._loss_first)) +\
+                     tf.reduce_mean(tf.multiply(mask_second, self._loss_second)) +\
+                     tf.reduce_mean(tf.multiply(mask_thrid, self._loss_third)) +\
+                     tf.reduce_mean(tf.multiply(mask_fourth, self._loss_fourth))
         self._optimizer = tf.train.AdamOptimizer(learning_rate=self._learning_rate, beta1 = 0.5, beta2 = 0.999).minimize(self._cost)
 #        self._optimizer = tf.train.GradientDescentOptimizer(learning_rate=self._learning_rate).minimize(self._cost)
 
