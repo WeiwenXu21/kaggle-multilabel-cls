@@ -31,11 +31,13 @@ class Network(object):
         self._create_loss_optimizer()
     
         # Uncomment these if using GPU
-        # config = tf.ConfigProto()
-        # config.gpu_options.allow_growth = True
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        
         variables = tf.global_variables()
         init = tf.global_variables_initializer()
-        self.sess = tf.Session()
+        
+        self.sess = tf.Session(config=config)
         self.sess.run(init)
     
         self.saver = tf.train.Saver()
@@ -229,7 +231,7 @@ class Network(object):
 
 
     def partial_fit(self, image, y_one, y_two, y_three, y_four, istrain=True):
-        opt, loss  = self.sess.run((self._optimizer, self._cost),
+        opt, loss =self.sess.run((self._optimizer, self._cost),
                                    feed_dict={self._image:image,
                                               self._y_first:y_one,
                                               self._y_second:y_two,

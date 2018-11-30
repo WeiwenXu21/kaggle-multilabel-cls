@@ -3,7 +3,7 @@ import tensorflow as tf
 import math
 
 class TrainData(object):
-    def __init__(self, dat_path, batch_size, img_numb = 1025947):
+    def __init__(self, dat_path, batch_size, img_numb = 1):
         self.dat_path = dat_path
         self.tot_img_numb = img_numb
         self.img_index = np.array(range(img_numb))

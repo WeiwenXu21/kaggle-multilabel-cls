@@ -31,6 +31,9 @@ def test(image, cnn='vgg16', sfile=None, learning_rate=0.01):
 def train(X_folder, y, learning_rate=0.001, batch_size=1000, training_epochs=5000, sfile=None, cnn='vgg16', model_path = None):
     num_class_layers = [4, 6, 14, 54, 526]
     network = Network(num_class_layers, learning_rate=learning_rate, sfile=sfile, cnn_name=cnn)
+    
+    if not os.path.exists(model_path):
+        os.mkdir(model_path)
 
     batch_numb = y.get_batch_number()
     
@@ -44,13 +47,15 @@ def train(X_folder, y, learning_rate=0.001, batch_size=1000, training_epochs=500
             batch_loss = network.partial_fit(images, batch_layer_one, batch_layer_two, batch_layer_three, batch_layer_four, istrain=True)
             ep_loss += batch_loss
         ep_loss = ep_loss/batch_numb
-        total_loss += ep_loss
-        loss_list.append(total_loss)
-        print("Epoch:", '%04d' % (epoch+1), "Loss = ", "{:.9f}".format(total_loss))
-        if (epoch+1)%1000 == 0 and model_path is not None:
-            path = os.path.join(model_path,'model','eps'+str(epoch+1))
+#        total_loss += ep_loss
+        loss_list.append(ep_loss)
+        print("Epoch:", '%04d' % (epoch+1), "Loss = ", "{:.9f}".format(ep_loss))
+        if (epoch+1)%3 == 0 and model_path is not None:
+            path = os.path.join(model_path,'model')
             if not os.path.exists(path):
                 os.mkdir(path)
+            path = os.path.join(path,'eps'+str(epoch+1))
+            os.mkdir(path)
             network.save(path, step = epoch+1)
     loss_list=np.array(loss_list)
     np.save(os.path.join(model_path,'training_loss.npy'),loss_list)
@@ -94,8 +99,6 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-
-    print(args.batch)
 
     y = TrainData(args.label, args.batch)
     train(args.image, y, learning_rate=args.step, training_epochs=args.iters, sfile = args.weight, cnn=args.net, model_path=args.output)
