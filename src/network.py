@@ -124,7 +124,7 @@ class Network(object):
                      tf.reduce_mean(tf.multiply(mask_second, self._loss_second)) +\
                      tf.reduce_mean(tf.multiply(mask_thrid, self._loss_third)) +\
                      tf.reduce_mean(tf.multiply(mask_fourth, self._loss_fourth))
-        self._optimizer = tf.train.AdamOptimizer(learning_rate=self._learning_rate, beta1 = 0.5, beta2 = 0.999).minimize(self._cost)
+        self._optimizer = tf.train.AdamOptimizer(learning_rate=self._learning_rate).minimize(self._cost)
 #        self._optimizer = tf.train.GradientDescentOptimizer(learning_rate=self._learning_rate).minimize(self._cost)
 
 
