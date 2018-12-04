@@ -21,13 +21,9 @@ class Network(object):
         self.is_training = tf.placeholder(tf.bool)
         self._image = tf.placeholder(tf.float32, shape=[None, 224, 224, 3])
         
-#        if cnn_name is 'vgg16':
         self._base_CNN_VGG()
         self._prediction_layers('vgg16')
-
-#        elif cnn_name is 'resnet50':
-#        self._base_CNN_ResNet()
-#        self._prediction_layers('resnet50')
+        
         self._create_loss_optimizer()
     
         # Uncomment these if using GPU
@@ -47,7 +43,7 @@ class Network(object):
         new_varibles = []
         for v in variables:
             tmp = v.name.split('/')
-            if tmp[0]=='vgg_16' and not tmp[-1].startswith('Adam') and not (tmp[1]=='fc7'):
+            if tmp[0]=='vgg_16' and not tmp[-1].startswith('Adam') and not (tmp[1]=='fc7') and not (tmp[1]=='fc6'):
                 variables_to_restore.append(v)
             else:
                 new_varibles.append(v)
@@ -94,10 +90,6 @@ class Network(object):
 
     def _base_CNN_VGG(self):#, is_training):
         with tf.variable_scope('vgg_16', reuse=tf.AUTO_REUSE):
-#        with slim.arg_scope([slim.conv2d, slim.fully_connected],
-#                            activation_fn=tf.nn.relu,
-#                            weights_initializer=tf.truncated_normal_initializer(0.0, 0.01),
-#                            weights_regularizer=slim.l2_regularizer(0.0005)):
             net = slim.repeat(self._image, 2, slim.conv2d, 64, [3, 3], scope='conv1')
             self.pool1 = slim.max_pool2d(net, [2, 2], padding='SAME', scope='pool1')
 
@@ -116,100 +108,6 @@ class Network(object):
             net = slim.fully_connected(pool5_flat, 4096, scope='fc6')
             self.fourth = slim.fully_connected(net, self.num_class_layers[4], scope='fc7')
 
-#            net = slim.fully_connected(self.pool5, 4096, scope='fc41')
-#            self.fourth = slim.fully_connected(net, self.num_class_layers[4], scope='fc42')
-#            self.kernel11 = tf.Variable(tf.random_normal([3,3,3,64], stddev=0.01), name='conv1_1')
-#            self.fm11 = tf.nn.conv2d(self._image, self.kernel11, [1, 1, 1, 1], padding='SAME')
-#            self.b11 = tf.Variable(tf.constant(0.1, shape=[64]), trainable=True, name='kb1_1')
-#            self.fm11 = tf.nn.bias_add(self.fm11, self.b11)
-#            self.conv11 = tf.nn.relu(self.fm11)
-#
-#            self.kernel12 = tf.Variable(tf.random_normal([3,3,64,64], stddev=0.01), name='conv1_2')
-#            self.fm12 = tf.nn.conv2d(self.conv11, self.kernel12, [1, 1, 1, 1], padding='SAME')
-#            self.b12 = tf.Variable(tf.constant(0.1, shape=[64]), trainable=True, name='kb1_2')
-#            self.fm12 = tf.nn.bias_add(self.fm12, self.b12)
-#            self.conv12 = tf.nn.relu(self.fm12)
-#
-#            self.pool1 = tf.nn.max_pool(self.conv12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool1')
-#
-#            self.kernel21 = tf.Variable(tf.random_normal([3,3,64,128], stddev=0.01), name='conv2_1')
-#            self.fm21 = tf.nn.conv2d(self.pool1, self.kernel21, [1, 1, 1, 1], padding='SAME')
-#            self.b21 = tf.Variable(tf.constant(0.1, shape=[128]), trainable=True, name='kb2_1')
-#            self.fm21 = tf.nn.bias_add(self.fm21, self.b21)
-#            self.conv21 = tf.nn.relu(self.fm21)
-#
-#            self.kernel22 = tf.Variable(tf.random_normal([3,3,128,128], stddev=0.01), name='conv2_2')
-#            self.fm22 = tf.nn.conv2d(self.conv21, self.kernel22, [1, 1, 1, 1], padding='SAME')
-#            self.b22 = tf.Variable(tf.constant(0.1, shape=[128]), trainable=True, name='kb2_2')
-#            self.fm22 = tf.nn.bias_add(self.fm22, self.b22)
-#            self.conv22 = tf.nn.relu(self.fm22)
-#
-#            self.pool2 = tf.nn.max_pool(self.conv22, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool2')
-#
-#            self.kernel31 = tf.Variable(tf.random_normal([3,3,128,256], stddev=0.01), name='conv3_1')
-#            self.fm31 = tf.nn.conv2d(self.pool2, self.kernel31, [1, 1, 1, 1], padding='SAME')
-#            self.b31 = tf.Variable(tf.constant(0.1, shape=[256]), trainable=True, name='kb3_1')
-#            self.fm31 = tf.nn.bias_add(self.fm31, self.b31)
-#            self.conv31 = tf.nn.relu(self.fm31)
-#
-#            self.kernel32 = tf.Variable(tf.random_normal([3,3,256,256], stddev=0.01), name='conv3_2')
-#            self.fm32 = tf.nn.conv2d(self.conv31, self.kernel32, [1, 1, 1, 1], padding='SAME')
-#            self.b32 = tf.Variable(tf.constant(0.1, shape=[256]), trainable=True, name='kb3_2')
-#            self.fm32 = tf.nn.bias_add(self.fm32, self.b32)
-#            self.conv32 = tf.nn.relu(self.fm32)
-#
-#            self.kernel33 = tf.Variable(tf.random_normal([3,3,256,256], stddev=0.01), name='conv3_3')
-#            self.fm33 = tf.nn.conv2d(self.conv32, self.kernel33, [1, 1, 1, 1], padding='SAME')
-#            self.b33 = tf.Variable(tf.constant(0.1, shape=[256]), trainable=True, name='kb3_3')
-#            self.fm33 = tf.nn.bias_add(self.fm33, self.b33)
-#            self.conv33 = tf.nn.relu(self.fm33)
-#
-#            self.pool3 = tf.nn.max_pool(self.conv33, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool3')
-#
-#            self.kernel41 = tf.Variable(tf.random_normal([3,3,256,512], stddev=0.01), name='conv4_1')
-#            self.fm41 = tf.nn.conv2d(self.pool3, self.kernel41, [1, 1, 1, 1], padding='SAME')
-#            self.b41 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb4_1')
-#            self.fm41 = tf.nn.bias_add(self.fm41, self.b41)
-#            self.conv41 = tf.nn.relu(self.fm41)
-#
-#            self.kernel42 = tf.Variable(tf.random_normal([3,3,512,512], stddev=0.01), name='conv4_2')
-#            self.fm42 = tf.nn.conv2d(self.conv41, self.kernel42, [1, 1, 1, 1], padding='SAME')
-#            self.b42 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb4_2')
-#            self.fm42 = tf.nn.bias_add(self.fm42, self.b42)
-#            self.conv42 = tf.nn.relu(self.fm42)
-#
-#            self.kernel43 = tf.Variable(tf.random_normal([3,3,512,512], stddev=0.01), name='conv4_3')
-#            self.fm43 = tf.nn.conv2d(self.conv42, self.kernel43, [1, 1, 1, 1], padding='SAME')
-#            self.b43 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb4_3')
-#            self.fm43 = tf.nn.bias_add(self.fm43, self.b43)
-#            self.conv43 = tf.nn.relu(self.fm43)
-#
-#            self.pool4 = tf.nn.max_pool(self.conv43, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool4')
-#
-#            self.kernel51 = tf.Variable(tf.random_normal([3,3,512,512], stddev=0.01), name='conv5_1')
-#            self.fm51 = tf.nn.conv2d(self.pool4, self.kernel51, [1, 1, 1, 1], padding='SAME')
-#            self.b51 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb5_1')
-#            self.fm51 = tf.nn.bias_add(self.fm51, self.b51)
-#            self.conv51 = tf.nn.relu(self.fm51)
-#
-#            self.kernel52 = tf.Variable(tf.random_normal([3,3,512,512], stddev=0.01), name='conv5_2')
-#            self.fm52 = tf.nn.conv2d(self.conv51, self.kernel52, [1, 1, 1, 1], padding='SAME')
-#            self.b52 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb5_2')
-#            self.fm52 = tf.nn.bias_add(self.fm52, self.b52)
-#            self.conv52 = tf.nn.relu(self.fm52)
-#
-#            self.kernel53 = tf.Variable(tf.random_normal([3,3,512,512], stddev=0.01), name='conv5_3')
-#            self.fm53 = tf.nn.conv2d(self.conv52, self.kernel53, [1, 1, 1, 1], padding='SAME')
-#            self.b53 = tf.Variable(tf.constant(0.1, shape=[512]), trainable=True, name='kb5_3')
-#            self.fm53 = tf.nn.bias_add(self.fm53, self.b53)
-#            self.conv53 = tf.nn.relu(self.fm53)
-#
-#            self.pool5 = tf.nn.max_pool(self.conv53, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool5')
-#
-#            fc1 = tf.contrib.layers.fully_connected(self.pool5, 4096, scope='fc41')
-#            self.fourth = tf.contrib.layers.fully_connected(fc1, self.num_class_layers[4], scope='fc42')
-#
-#        return self.fourth
 
     def _create_loss_optimizer(self):
         self._loss_first = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.top, labels=self._y_first)

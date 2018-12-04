@@ -47,10 +47,9 @@ def train(X_folder, y, learning_rate=0.001, batch_size=1000, training_epochs=500
             batch_loss = network.partial_fit(images, batch_layer_one, batch_layer_two, batch_layer_three, batch_layer_four, istrain=True)
             ep_loss += batch_loss
         ep_loss = ep_loss/batch_numb
-#        total_loss += ep_loss
         loss_list.append(ep_loss)
         print("Epoch:", '%04d' % (epoch+1), "Loss = ", "{:.9f}".format(ep_loss))
-        if (epoch+1)%3 == 0 and model_path is not None:
+        if (epoch+1)%1000 == 0 and model_path is not None:
             path = os.path.join(model_path,'model')
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -77,9 +76,6 @@ def parse_args():
     # Optional arguments.
     parser.add_argument('-w', '--weight', dest='weight', type = str,
                         default = None, help='Path to pretrained model weights')
-#    parser.add_argument('-m', '--model', dest='model', type = str,
-#                        default = 'network/output/model/',
-#                        help = 'Path to the output directory for trained model weights.')
     parser.add_argument('-n', '--net', dest='net', type = str,
                         default='vgg16', help='vgg16, resnet50 [DEFAULT: vgg16]')
     
