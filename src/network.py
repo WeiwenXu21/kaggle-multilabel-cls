@@ -149,7 +149,7 @@ class Network(object):
         return loss
 
     def prediction(self, image, istrain = False):
-        return self.sess.run(self.top, self.second, self.third, self.fourth, feed_dict={self._image:image, self.is_training:istrain})
+        return self.sess.run((self.top, self.second, self.third, self.fourth), feed_dict={self._image:image, self.is_training:istrain})
 
     def save(self, path, step):
         self.saver.save(self.sess, save_path = path+'/network', global_step = step)
