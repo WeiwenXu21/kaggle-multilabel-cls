@@ -56,14 +56,12 @@ def parse_args():
     
     parser.add_argument('-x', '--image', dest='image', required = True, type = str,
                         help='Path to images')
-    parser.add_argument('-w', '--weight', dest='weight', type = str,
-                        default = None, help='Path to pretrained model weights')
+    parser.add_argument('-w', '--weight', dest='weight', required = True, type = str,
+                        help='Path to pretrained model weights')
     parser.add_argument('-o', '--output', dest='output', type = str,
                         help = 'Path to the output directory for predict results.')
 
     # Optional arguments.
-    parser.add_argument('-w', '--weight', dest='weight', type = str,
-                        default = None, help='Path to pretrained model weights')
     parser.add_argument('-n', '--net', dest='net', type = str,
                         default='vgg16', help='vgg16, resnet50 [DEFAULT: vgg16]')
     
